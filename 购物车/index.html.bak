@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>详情页</title>
+  <script src="js/cookies.js"></script>
+  <style>
+	*{
+		margin:0;
+		padding:0;
+		list-style:none;
+	}
+	#box{
+		width:600px;
+		overflow:hidden;
+		margin:100px  auto;
+		border:1px solid #eeeeee;
+		padding:20px;
+	}
+	.left{
+		float:left;
+	}
+	.right{
+		float:right;
+	}
+	#size{
+		overflow:hidden;
+	}
+	#size li{
+		float:left;
+		font-size:16px;
+		padding:5px;
+		border:1px solid #f2f2f2;
+		cursor:pointer;
+		margin-left:3px;
+	}
+	#size li:hover{
+		border-color:red;
+	}
+	#size .bingo{
+		border-color:red;
+	}
+	#btn{
+		width:120px;
+		font-size:20px;
+		text-align:center;
+		line-height:50px;
+		background:red;
+		color:#ffffff;
+		margin-top:20px;
+		cursor:pointer;
+	}
+  </style>
+ </head>
+ <body>
+	<div id="box">
+		<div class="left">
+			<img src="img/1.jpg" id="goodsImg" alt="休闲鞋"/>
+			<input type="hidden" id="goodsId" value="20160825">
+		</div>
+		<div class="right">
+			<h4 id="name">【花花公子】冬季新款休闲鞋</h4>
+			<h4>&yen;<span id="price">300</span></h4>
+			<ul id="size">
+				<li>40</li>
+				<li>41</li>
+				<li class="bingo">42</li>
+				<li>43</li>
+				<li>44</li>
+				<li>45</li>
+			</ul>
+			<p><input type="number" id="number" min="1" max="6" value="1"></p>
+			<div id="btn">加入购物车</div>
+		</div>
+	</div>
+ </body>
+ <script>
+	function $(id){
+		return document.getElementById(id);
+	}
+	var lis = $('size').getElementsByTagName('li');
+
+	for(var i = 0;i < lis.length;i++){
+		lis[i].onclick = function(){
+			for(var j = 0;j < lis.length;j++){
+				lis[j].className = '';
+			}
+			this.className = 'bingo';
+		}
+	}
+
+	$('btn').onclick = function(){
+		for(var i = 0;i < lis.length;i++){
+			if(lis[i].className=='bingo'){
+				var size = lis[i].innerHTML;
+			}
+		}
+		var val = 'id#'+$('goodsId').value+'|name#'+$('name').innerHTML+'|imgUrl#'+$('goodsImg').src+'|price#'+$('price').innerHTML+'|size#'+size+'|number#'+$('number').value+'|url#'+window.location.href;
+		cookie('goods'+$('goodsId').value+size,val,1);
+	}
+ </script>
+</html>

@@ -1,0 +1,230 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="Generator" content="EditPlus®">
+  <meta name="Author" content="">
+  <meta name="Keywords" content="">
+  <meta name="Description" content="">
+  <title>购物车</title>
+  <script src="js/cookies.js"></script>
+  <style>
+		*{
+			margin:0;
+			padding:0;
+			list-style:none;
+		}
+		#box{
+			width:800px;
+			margin:20px auto;
+			border:1px solid #cccccc;
+		}
+		.header{
+			overflow:hidden;
+		}
+		.header li{
+			float:left;
+			width:200px;
+			text-align:center;
+			line-height:40px;
+			border-bottom:1px solid #cccccc;
+		}
+		#goodsList{
+			padding: 30px 0;
+			border-bottom:1px solid #cccccc;
+		}
+		#goodsList p{
+			text-align:center;
+			font-size:20px;
+		}
+		#goodsList p a{
+			color:#33cc00;
+		}
+		.footer{
+			padding:10px 0;
+			overflow:hidden;
+		}
+		.footer span,.footer input{
+			float:right;
+			margin-right:10px;
+		}
+		.footer input{
+			width:80px;
+			height:30px;
+			border:0;
+			background:red;
+			color:#ffffff;
+			font-size:20px;
+			border-radius:4px;
+			outline:none;
+		}
+		.footer span{
+			font-size:20px;
+			padding:5px 0;
+			color:red;
+		}
+		.footer span em{
+			font-style:normal;
+		}
+		#goodsList dl{
+			overflow:hidden;
+			padding:10px 0;
+			border-bottom:1px solid #ccc;
+		}
+		#goodsList dl dt,#goodsList dl dd{
+			float:left;
+		}
+		#goodsList dl dt{
+			width:180px;
+			height:60px;
+		}
+		#goodsList dl dt input{
+			display:inline-block;
+		}
+		#goodsList dl dt a{
+			width:160px;
+			height:60px;
+			display:inline-block;
+			font-size:14px;
+		}
+		#goodsList dl dt img{
+			width:60px;
+			height:60px;
+			display:block;
+			border:0;
+			float:left;
+		}
+		#goodsList dl dt span{
+			float:left;
+			width:100px;
+		}
+		#goodsList dl dd{
+			line-height:60px;
+		}
+		.oSize{
+			width:60px;
+			text-align:center;
+			margin-left:86px;
+		}
+		.oNumber{
+			width:60px;
+			text-align:center;
+			margin-left:141px;
+		}
+		.oPrice{
+			width:60px;
+			text-align:center;
+			margin-left:140px;
+		}
+		#goodsList dl .oDelet{
+			font-size:14px;
+			background:red;
+			color:#ffffff;
+			border-radius:3px;
+			line-height:30px;
+			margin-top:14px;
+			cursor:pointer;
+		}
+  </style>
+ </head>
+ <body>
+	<div id="box">
+		<ul class="header">
+			<li>名称</li>
+			<li>型号</li>
+			<li>数量</li>
+			<li>单价</li>
+		</ul>
+		<div id="goodsList">
+			<p id="hide">购物车是空的，请先去选购商品吧！！<a href="index.html">去逛逛</a></p>
+		</div>
+		<p class="footer"><input type="button" id="buy" value="结算"><span>&yen;<em id="all">0<em></span></p>
+	</div>
+ </body>
+ <script>
+	var hide = document.getElementById('hide');
+	var goodsList = document.getElementById('goodsList');
+	var oAll = document.getElementById('all');
+	var all = 0;
+	var coo = cookie();
+	if(coo){
+		hide.style.display = 'none';
+		for(var key in coo){
+			var arr1 = coo[key].split('|');
+			var arr2 = [];
+			var obj = {};
+			for(var i = 0;i < arr1.length;i++){
+				arr2.push(arr1[i].split('#'));
+			}
+			for(var j = 0;j < arr2.length;j++){
+				obj[arr2[j][0]] = arr2[j][1];
+			}
+			var oDl = document.createElement('dl');
+			//创建名称
+			var oDt = document.createElement('dt');
+			var oImg = document.createElement('img');
+			oImg.src = obj.imgUrl
+			var oText = document.createElement('span');
+			oText.innerHTML = obj.name;
+			var oA = document.createElement('a');
+			oA.href = obj.url;
+			var oCheck = document.createElement('input');
+			oCheck.type = 'checkbox';
+			oA.appendChild(oImg);
+			oA.appendChild(oText);
+			oDt.appendChild(oCheck);
+			oDt.appendChild(oA);
+			oDl.appendChild(oDt);
+			//创建型号
+			var oSize = document.createElement('dd');
+			oSize.className = 'oSize';
+			oSize.innerHTML = obj.size;
+			oDl.appendChild(oSize);
+			//创建数量
+			var oNumber = document.createElement('dd');
+			oNumber.className = 'oNumber';
+			oNumber.innerHTML = obj.number;
+			oDl.appendChild(oNumber);
+			//创建单价
+			var oPrice = document.createElement('dd');
+			oPrice.className = 'oPrice';
+			oPrice.innerHTML = obj.price;
+			oDl.appendChild(oPrice);
+			//删除按钮
+			var oDelet = document.createElement('dd');
+			oDelet.className = 'oDelet';
+			oDelet.innerHTML = '删除商品';
+			oDelet.id = obj.id + obj.size;
+			oDl.appendChild(oDelet);
+			goodsList.appendChild(oDl);
+		}
+		var oC = goodsList.getElementsByTagName('input');
+		var oP = goodsList.getElementsByClassName('oPrice');
+		var oN = goodsList.getElementsByClassName('oNumber');
+		var oD = goodsList.getElementsByClassName('oDelet');
+		for(var k = 0;k < oC.length;k++){
+			oC[k].index = k;
+			oD[k].index = k;
+			oC[k].onchange = function(){
+				var p = oP[this.index].innerHTML * oN[this.index].innerHTML;
+				if(this.checked){
+					all += p;
+				}else{
+					all -= p;
+				}
+				oAll.innerHTML = all;
+			}
+			oD[k].onclick = function(){
+				cookie('goods'+this.id,'',-1);
+				if(this.parentNode.childNodes[0].childNodes[0].checked){
+					all -= oP[this.index].innerHTML * oN[this.index].innerHTML;
+				}
+				oAll.innerHTML = all;
+				this.parentNode.style.display = 'none';
+			}
+		}
+	}
+	
+
+ </script>
+</html>
